@@ -1,0 +1,43 @@
+#!/usr/bin/python3
+#
+#	screen2html - Convert ANSI-color containing terminal output to HTML.
+#	Copyright (C) 2017-2017 Johannes Bauer
+#
+#	This file is part of screen2html.
+#
+#	screen2html is free software; you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation; this program is ONLY licensed under
+#	version 3 of the License, later versions are explicitly excluded.
+#
+#	screen2html is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with screen2html; if not, write to the Free Software
+#	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+#	Johannes Bauer <JohannesBauer@gmx.de>
+#
+# Parses mate-terminal source code (src/terminal-profile.c) and extracts color
+# codes.
+
+import sys
+
+data = sys.stdin.read()
+data = data.strip()
+data = data.split("\n")
+assert(len(data) == 16)		# Exactly 16 input lines
+
+data = [ line.replace(",", " ").split() for line in data ]
+data = [ (float(line[1]), float(line[2]), float(line[3])) for line in data ]
+
+print("[%s]" % (sys.argv[1]))
+for (index, (r, g, b)) in enumerate(data):
+	r = round(255 * r)
+	g = round(255 * g)
+	b = round(255 * b)
+	print("col%d = %02x%02x%02x" % (index, r, g, b))
+print()

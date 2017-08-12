@@ -1,0 +1,40 @@
+pre.xterm {
+	color: #d3d7cf;
+	background-color: #000000;
+	padding: 20px;
+	border: 1px dotted white;
+	white-space: pre-wrap;
+}
+
+pre.xterm > span.f0 { color: #000000; }
+pre.xterm > span.b0 { background-color: #000000; }
+pre.xterm > span.f1 { color: #cc0000; }
+pre.xterm > span.b1 { background-color: #cc0000; }
+pre.xterm > span.f2 { color: #4e9a06; }
+pre.xterm > span.b2 { background-color: #4e9a06; }
+pre.xterm > span.f3 { color: #c4a000; }
+pre.xterm > span.b3 { background-color: #c4a000; }
+pre.xterm > span.f4 { color: #3465a4; }
+pre.xterm > span.b4 { background-color: #3465a4; }
+pre.xterm > span.f5 { color: #75507b; }
+pre.xterm > span.b5 { background-color: #75507b; }
+pre.xterm > span.f6 { color: #06989a; }
+pre.xterm > span.b6 { background-color: #06989a; }
+pre.xterm > span.f7 { color: #d3d7cf; }
+pre.xterm > span.b7 { background-color: #d3d7cf; }
+pre.xterm > span.f8 { color: #555753; }
+pre.xterm > span.b8 { background-color: #555753; }
+pre.xterm > span.f9 { color: #ef2929; }
+pre.xterm > span.b9 { background-color: #ef2929; }
+pre.xterm > span.f10 { color: #8ae234; }
+pre.xterm > span.b10 { background-color: #8ae234; }
+pre.xterm > span.f11 { color: #fce94f; }
+pre.xterm > span.b11 { background-color: #fce94f; }
+pre.xterm > span.f12 { color: #729fcf; }
+pre.xterm > span.b12 { background-color: #729fcf; }
+pre.xterm > span.f13 { color: #ad7fa8; }
+pre.xterm > span.b13 { background-color: #ad7fa8; }
+pre.xterm > span.f14 { color: #34e2e2; }
+pre.xterm > span.b14 { background-color: #34e2e2; }
+pre.xterm > span.f15 { color: #eeeeec; }
+pre.xterm > span.b15 { background-color: #eeeeec; }
