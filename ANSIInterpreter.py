@@ -24,7 +24,6 @@
 
 import sys
 import re
-import mako.lookup
 
 class ANSIInterpreter(object):
 	_ESCAPE_CONTROL_SEQUENCE_RE = re.compile("\x1b(\[(?P<args_csi>.*?)(?P<cmd_csi>[A-Za-z])|(?P<cmd_tabset>H +))")

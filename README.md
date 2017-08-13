@@ -42,6 +42,7 @@ optional arguments:
                         to xterm.
 ```
 
+
 # CSS
 You can specify a palette file in simple INI format, as seen in palette.ini.
 Four standard palettes are already available and have been ripped from the
@@ -76,6 +77,11 @@ optional arguments:
                         Foreground color index that is assumed as default.
                         Defaults to 7 (white).
 ```
+
+
+# Requirements
+screen2html requires vanilla Python3, but does not have any other dependencies.
+
 
 # License
 Licensed under the GNU GPL-3 (later versions of the GPL excluded).
