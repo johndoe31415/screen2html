@@ -59,8 +59,10 @@ if args.complete_html:
 	html_args["content"] = content
 
 	print("""\
+<!DOCTYPE html>
 <html>
 	<head>
+		<meta charset="utf-8">
 		%(css)s
 	</head>
 
