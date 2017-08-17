@@ -24,6 +24,7 @@
 
 import sys
 import configparser
+import colorsys
 from FriendlyArgumentParser import FriendlyArgumentParser
 
 parser = FriendlyArgumentParser()
@@ -49,10 +50,28 @@ pre.%(classname)s {
 	white-space: pre-wrap;
 }
 """ % css)
+print("pre.%s > span.italics { font-style: italic; }" % (args.classname))
+print("pre.%s > span.underline { text-decoration: underline; }" % (args.classname))
+
+def _clamp(value):
+	if value < 0:
+		value = 0
+	elif value > 255:
+		value = 255
+	return value
+
+def brighten(color):
+	rgb = (int(color[0 : 2], 16), int(color[2 : 4], 16), int(color[4 : 6], 16))
+	(h, s, v) = colorsys.rgb_to_hsv(*rgb)
+	v = _clamp(v + 40)
+	rgb = [ _clamp(round(value)) for value in colorsys.hsv_to_rgb(h, s, v) ]
+	return "".join("%02x" % (value) for value in rgb)
 
 for index in range(16):
 	colname = "col%d" % (index)
 	color = config[args.scheme][colname]
 	print("pre.%s > span.f%d { color: #%s; }" % (args.classname, index, color))
+	print("pre.%s > span.F%d { color: #%s; }" % (args.classname, index, brighten(color)))
 	print("pre.%s > span.b%d { background-color: #%s; }" % (args.classname, index, color))
+	print("pre.%s > span.B%d { background-color: #%s; }" % (args.classname, index, brighten(color)))
 

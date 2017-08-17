@@ -10,11 +10,15 @@ session or by invoking screen with the "-L" argument, such as:
 $ screen -L mylog.txt
 ```
 
+Note that old versions of screen do not support setting the filename with the
+"-L" option (my version 4.05.00 of 2016-12-10 does) -- these versions will
+create a ```screenlog.*``` file instead.
+
 Afterwards, you can run your logfile by screen2html, which will parse the
 contained ANSI escape sequences and produce HTML that honors them. For example:
 
 ```
-$ ./screen2html mylog.txt >mylog.html
+$ ./screen2html --complete-html --css-verbatim --css-filename example/terminal-tango.css screenlog.0 >screen.html
 ```
 
 The help-page should be self-explanatory:

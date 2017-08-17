@@ -40,11 +40,14 @@ class ANSIInterpreter(object):
 
 	def _reset_terminal(self):
 		self._attrs = {
-			"bright":		False,
-			"underline":	False,
-			"fgcolor":		self._default_fg_color,
-			"bgcolor":		self._default_bg_color,
-			"tabsize":		8,
+			"bright":				False,
+			"underline":			False,
+			"italics":				False,
+			"high_intensity_fg":	False,
+			"high_intensity_bg":	False,
+			"fgcolor":				self._default_fg_color,
+			"bgcolor":				self._default_bg_color,
+			"tabsize":				8,
 		}
 
 	@property
@@ -65,8 +68,16 @@ class ANSIInterpreter(object):
 		classes = [ ]
 		if self._attrs["underline"]:
 			classes.append("underline")
-		classes.append("f%d" % (fg_col))
-		classes.append("b%d" % (bg_col))
+		if self._attrs["italics"]:
+			classes.append("italics")
+		if self._attrs["high_intensity_fg"]:
+			classes.append("F%d" % (fg_col))
+		else:
+			classes.append("f%d" % (fg_col))
+		if self._attrs["high_intensity_bg"]:
+			classes.append("B%d" % (bg_col))
+		else:
+			classes.append("b%d" % (bg_col))
 		return classes
 
 	def _set_attributes(self):
@@ -91,9 +102,18 @@ class ANSIInterpreter(object):
 					self._reset_terminal()
 				elif arg == 1:
 					self._attrs.update({ "bright": True })
+				elif arg == 3:
+					self._attrs.update({ "italics": True })
 				elif arg == 4:
 					self._attrs.update({ "underline": True })
-				elif arg == 7:
+				elif arg == 22:
+					self._attrs.update({ "bright": False })
+				elif arg == 23:
+					self._attrs.update({ "italics": False })
+				elif arg == 24:
+					self._attrs.update({ "underline": False })
+				elif arg in [ 7, 27 ]:
+					# Invert / cancel invert
 					self._attrs.update({ "bgcolor": self._attrs["fgcolor"], "fgcolor": self._attrs["bgcolor"] })
 				elif 30 <= arg <= 37:
 					self._attrs.update({ "fgcolor": arg - 30 })
@@ -103,9 +123,23 @@ class ANSIInterpreter(object):
 					self._attrs.update({ "bgcolor": arg - 40 })
 				elif arg == 49:
 					self._attrs.update({ "bgcolor": self._default_bg_color })
+				elif 90 <= arg <= 97:
+					self._attrs.update({ "fgcolor": arg - 90, "high_intensity_fg": True })
+				elif 100 <= arg <= 107:
+					self._attrs.update({ "bgcolor": arg - 100, "high_intensity_bg": True })
 				else:
 					print("Warning: Unable to interpret CSI 'm' argument %d: %s" % (arg, str(command)), file = sys.stderr)
 			self._set_attributes()
+		elif command["cmd"] == "H":
+			# Position X/Y -- we ignore this.
+			pass
+		elif command["cmd"] == "C":
+			# Cursor forward
+			space_cnt = 1 + int(command["args"])
+			old_attrs = self._attrs
+			self._reset_terminal()
+			self._add_text(" " * space_cnt)
+			self._attrs = old_attrs
 		elif command["cmd"] == "g":
 			# TODO: Clear tab? No idea how to handle. Ingore.
 			pass
