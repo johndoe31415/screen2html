@@ -1,7 +1,11 @@
 # screen2html
-This converts terminal output, recorded by the GNU screen utility, to
-formatting that preserves the original terminal colors. You can view an example
-here: [https://johndoe31415.github.io/screen2html/](https://johndoe31415.github.io/screen2html/)
+This tool converts text that contains ANSI escape sequences for coloring or
+formatting text (bold, underline, italics) to HTML, trying to preserve the
+original terminal colors as closely as possible. One use case is to record a
+screen session to a screen logfile and convert this to HTML (where you'd
+otherwise make a non-copy/pastable screenshot if you wanted to preserve the
+original colors). You can view an example here:
+[https://johndoe31415.github.io/screen2html/](https://johndoe31415.github.io/screen2html/)
 To use screen2html, you first need to use the log recording mechanism of
 screen. This is achieved either by hitting "Ctrl-A H" during a running screen
 session or by invoking screen with the "-L" argument, such as:
