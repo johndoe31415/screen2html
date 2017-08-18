@@ -28,15 +28,22 @@ import re
 class ANSIInterpreter(object):
 	_ESCAPE_CONTROL_SEQUENCE_RE = re.compile("\x1b(\[(?P<args_csi>.*?)(?P<cmd_csi>[A-Za-z])|(?P<cmd_tabset>H +))")
 
-	def __init__(self, default_fg_color = 7, default_bg_color = 0):
+	def __init__(self, class_resolver, default_fg_color = 7, default_bg_color = 0):
+		self._class_resolver = class_resolver
 		self._default_fg_color = default_fg_color
 		self._default_bg_color = default_bg_color
+		self._default_classes = set([ "f%d" % (self._default_fg_color), "b%d" % (self._default_bg_color) ])
 		self._attrs = None
 		self._reset_terminal()
 		self._output = [ ]
 		self._active_classes = None
+		self._current_classes = None
 		self._used_classes = set()
 		self._set_attributes()
+
+	@property
+	def used_classes(self):
+		return self._used_classes
 
 	def _reset_terminal(self):
 		self._attrs = {
@@ -55,6 +62,17 @@ class ANSIInterpreter(object):
 		return "".join(self._output)
 
 	def _add_text(self, text):
+		if text == "":
+			return
+
+		if self._active_classes != self._current_classes:
+			if self._active_classes is not None:
+				self._output.append("</span>")
+			if self._current_classes is not None:
+				self._used_classes |= set(self._current_classes)
+				self._output.append("<span %s>" % (self._class_resolver(self._current_classes)))
+			self._active_classes = self._current_classes
+
 		text = text.replace("<", "&lt;")
 		text = text.replace(">", "&gt;")
 		self._output.append(text)
@@ -78,17 +96,14 @@ class ANSIInterpreter(object):
 			classes.append("B%d" % (bg_col))
 		else:
 			classes.append("b%d" % (bg_col))
+
+		classes = [ classname for classname in classes if classname not in self._default_classes ]
+		if len(classes) == 0:
+			classes = None
 		return classes
 
 	def _set_attributes(self):
-		new_classes = self._get_classes()
-		if new_classes != self._active_classes:
-			if self._active_classes is not None:
-				self._output.append("</span>")
-			self._used_classes |= set(new_classes)
-			self._output.append("<span class=\"%s\">" % (" ".join(new_classes)))
-			self._active_classes = new_classes
-
+		self._current_classes = self._get_classes()
 
 	def _interpret_command_csi(self, command):
 		if command["args"] == "":

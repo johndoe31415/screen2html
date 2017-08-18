@@ -1,0 +1,15 @@
+#!/bin/bash -ex
+
+INPUT="example/screenlog.txt"
+OUTPUT="output.html"
+./screen2html "$INPUT" >"$OUTPUT"
+./screen2html --complete-html "$INPUT" >"$OUTPUT"
+./screen2html --complete-html --write-css "$INPUT" >"$OUTPUT"
+./screen2html --complete-html --full-css "$INPUT" >"$OUTPUT"
+./screen2html --complete-html --classname foobar "$INPUT" >"$OUTPUT"
+
+for CSSMODE in class style; do
+	for INCMODE in link style; do
+		./screen2html --complete-html --css-mode "$CSSMODE" --html-css-inclusion "$INCMODE" "$INPUT" >"$OUTPUT"
+	done
+done

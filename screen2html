@@ -25,38 +25,58 @@
 import sys
 from FriendlyArgumentParser import FriendlyArgumentParser
 from ANSIInterpreter import ANSIInterpreter
+from ClassResolvers import InlineCSSResolver, ClassCSSResolver
+from CSSGenerator import CSSGenerator
 
 parser = FriendlyArgumentParser()
 parser.add_argument("--complete-html", action = "store_true", help = "Generate a complete HTML file that can be directly rendered in the browser.")
+parser.add_argument("--html-css-inclusion", choices = [ "link", "style" ], default = "link", help = "When generating a complete HTML example, determines how CSS is referenced when css-mode is 'class'. This can be either a link to the CSS file ('link') or included verbatim as a <style> tag ('style'). Defaults to %(default)s.")
 parser.add_argument("--css-filename", metavar = "filename", type = str, default = "terminal-tango.css", help = "When generating a complete HTML file, specifies the filename of the CSS to include. Defaults to %(default)s.")
-parser.add_argument("--css-verbatim", action = "store_true", help = "When generating a complete HTML file, include the specified CSS file verbatim, i.e., inside the HTML via <style>, instead of by a <link> reference.")
-parser.add_argument("-c", "--classname", metavar = "class", type = str, default = "xterm", help = "CSS class to use in HTML for terminal <pre>. Defaults to %(default)s.")
+parser.add_argument("--css-mode", choices = [ "class", "style" ], default = "link", help = "Choose how CSS attributes are selected. 'class' includes class attributes that refer to CSS. 'style' does not reference CSS classes, but puts everything inline inside 'style' attributes directly. Defaults to %(default)s.")
+parser.add_argument("--write-css", action = "store_true", help = "Do not only put the name of the CSS filename in the 'link' tag of an example HTML, but also write CSS file itself.")
+parser.add_argument("--full-css", action = "store_true", help = "Write a full CSS file containing all classes, not just those classes which are needed to render the particular log output.")
+parser.add_argument("-p", "--schemes-config", metavar = "configfile", type = str, default = "color_schemes.ini", help = "Specifies the color schemes configuration file that is read in and contains color master data. Defaults to %(default)s.")
+parser.add_argument("-s", "--scheme", metavar = "name", type = str, default = "tango", help = "Color scheme to pick from configuration file. Defaults to %(default)s.")
+parser.add_argument("-b", "--bgcolor", metavar = "index", type = int, default = 0, help = "Background color index that is assumed as default. Defaults to %(default)d (black).")
+parser.add_argument("-f", "--fgcolor", metavar = "index", type = int, default = 7, help = "Foreground color index that is assumed as default. Defaults to %(default)d (white).")
+parser.add_argument("-c", "--classname", metavar = "class", type = str, default = "xterm", help = "CSS class to use for terminal <pre>. Defaults to %(default)s.")
 parser.add_argument("logfile", metavar = "filename", type = str, help = "Screen logfile that should be converted to HTML.")
 args = parser.parse_args(sys.argv[1:])
 
 with open(args.logfile) as f:
 	logfile = f.read()
 
-ansi = ANSIInterpreter()
+
+css = CSSGenerator(args.schemes_config, args.scheme, fg_color_index = args.fgcolor, bg_color_index = args.bgcolor, pre_classname = args.classname)
+
+if args.css_mode == "style":
+	class_resolver = InlineCSSResolver(css)
+else:
+	class_resolver = ClassCSSResolver(css)
+
+ansi = ANSIInterpreter(class_resolver, default_fg_color = args.fgcolor, default_bg_color = args.bgcolor)
 ansi.parse(logfile)
 
-content = "<pre class=\"%s\">\n" % (args.classname)
-content += ansi.html
-content += "</pre>"
+if args.css_mode == "style":
+	pre_content = "<pre style=\"%s\">\n" % ("; ".join(css.pre_attributes()))
+else:
+	pre_content = "<pre class=\"%s\">\n" % (args.classname)
+pre_content += ansi.html
+pre_content += "</pre>"
 
 if args.complete_html:
-
-	if args.css_verbatim:
-		css = "<style>\n"
-		with open(args.css_filename) as f:
-			css += f.read()
-		css += "</style>"
+	if args.css_mode == "style":
+		css_text = ""
+	elif args.html_css_inclusion == "style":
+		css_text = "<style>\n"
+		css_text += css.generate(ansi.used_classes if (not args.full_css) else None)
+		css_text += "</style>"
 	else:
-		css = "<link rel=\"stylesheet\" href=\"%s\" />" % (args.css_filename)
+		css_text = "<link rel=\"stylesheet\" href=\"%s\" />" % (args.css_filename)
 	
 	html_args = dict(vars(args))
-	html_args["css"] = css
-	html_args["content"] = content
+	html_args["css"] = css_text
+	html_args["content"] = pre_content
 
 	print("""\
 <!DOCTYPE html>
@@ -71,4 +91,9 @@ if args.complete_html:
 	</body>
 </html>""" % html_args)
 else:
-	print(content)
+	print(pre_content)
+
+if args.write_css:
+	with open(args.css_filename, "w") as f:
+		f.write(css.generate(ansi.used_classes if (not args.full_css) else None))
+

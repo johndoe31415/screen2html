@@ -22,14 +22,16 @@ Afterwards, you can run your logfile by screen2html, which will parse the
 contained ANSI escape sequences and produce HTML that honors them. For example:
 
 ```
-$ ./screen2html --complete-html --css-verbatim --css-filename example/terminal-tango.css screenlog.0 >screen.html
+$ ./screen2html --complete-html --css-mode=style screenlog.0 >screen.html
 ```
 
 The help-page should be self-explanatory:
 
 ```
-usage: screen2html [-h] [--complete-html] [--css-filename filename]
-                   [--css-verbatim] [-c class]
+usage: screen2html [-h] [--complete-html] [--html-css-inclusion {link,style}]
+                   [--css-filename filename] [--css-mode {class,style}]
+                   [--write-css] [--full-css] [-p configfile] [-s name]
+                   [-b index] [-f index] [-c class]
                    filename
 
 positional arguments:
@@ -39,53 +41,48 @@ optional arguments:
   -h, --help            show this help message and exit
   --complete-html       Generate a complete HTML file that can be directly
                         rendered in the browser.
+  --html-css-inclusion {link,style}
+                        When generating a complete HTML example, determines
+                        how CSS is referenced when css-mode is 'class'. This
+                        can be either a link to the CSS file ('link') or
+                        included verbatim as a <style> tag ('style'). Defaults
+                        to link.
   --css-filename filename
                         When generating a complete HTML file, specifies the
                         filename of the CSS to include. Defaults to terminal-
                         tango.css.
-  --css-verbatim        When generating a complete HTML file, include the
-                        specified CSS file verbatim, i.e., inside the HTML via
-                        <style>, instead of by a <link> reference.
-  -c class, --classname class
-                        CSS class to use in HTML for terminal <pre>. Defaults
-                        to xterm.
-```
-
-
-# CSS
-You can specify a palette file in simple INI format, as seen in palette.ini.
-Four standard palettes are already available and have been ripped from the
-mate-terminal source code (using the "parse_mate_terminal" tool): tango, linux,
-xterm and rxvt. First, either edit the palette INI file to your wishes, then
-generate a CSS by running
-
-```
-$ ./mkcss -s mycolscheme >my_terminal.css
-```
-
-A help page is available and should, again, be self-explanatory:
-
-```
-usage: mkcss [-h] [-p configfile] [-s name] [-c class] [-b index] [-f index]
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -p configfile, --palette configfile
-                        Specifies the palette file that is read in. Defaults
-                        to palette.ini.
+  --css-mode {class,style}
+                        Choose how CSS attributes are selected. 'class'
+                        includes class attributes that refer to CSS. 'style'
+                        does not reference CSS classes, but puts everything
+                        inline inside 'style' attributes directly. Defaults to
+                        link.
+  --write-css           Do not only put the name of the CSS filename in the
+                        'link' tag of an example HTML, but also write CSS file
+                        itself.
+  --full-css            Write a full CSS file containing all classes, not just
+                        those classes which are needed to render the
+                        particular log output.
+  -p configfile, --schemes-config configfile
+                        Specifies the color schemes configuration file that is
+                        read in and contains color master data. Defaults to
+                        color_schemes.ini.
   -s name, --scheme name
-                        Color scheme to pick from palette file. Defaults to
-                        tango.
-  -c class, --classname class
-                        HTML class name that will be used in CSS. Defaults to
-                        xterm.
+                        Color scheme to pick from configuration file. Defaults
+                        to tango.
   -b index, --bgcolor index
                         Background color index that is assumed as default.
                         Defaults to 0 (black).
   -f index, --fgcolor index
                         Foreground color index that is assumed as default.
                         Defaults to 7 (white).
+  -c class, --classname class
+                        CSS class to use for terminal <pre>. Defaults to
+                        xterm.
 ```
+
+The CSS can also be written out by specifying the `--write-css` parameter
+(otherwise it is not overwritten by default).
 
 
 # Requirements
