@@ -31,7 +31,7 @@ from CSSGenerator import CSSGenerator
 parser = FriendlyArgumentParser()
 parser.add_argument("--complete-html", action = "store_true", help = "Generate a complete HTML file that can be directly rendered in the browser.")
 parser.add_argument("--html-css-inclusion", choices = [ "link", "style" ], default = "link", help = "When generating a complete HTML example, determines how CSS is referenced when css-mode is 'class'. This can be either a link to the CSS file ('link') or included verbatim as a <style> tag ('style'). Defaults to %(default)s.")
-parser.add_argument("--css-filename", metavar = "filename", type = str, default = "terminal-tango.css", help = "When generating a complete HTML file, specifies the filename of the CSS to include. Defaults to %(default)s.")
+parser.add_argument("--css-filename", metavar = "filename", type = str, default = "terminal.css", help = "When generating a complete HTML file, specifies the filename of the CSS to include. Defaults to %(default)s.")
 parser.add_argument("--css-mode", choices = [ "class", "style" ], default = "link", help = "Choose how CSS attributes are selected. 'class' includes class attributes that refer to CSS. 'style' does not reference CSS classes, but puts everything inline inside 'style' attributes directly. Defaults to %(default)s.")
 parser.add_argument("--write-css", action = "store_true", help = "Do not only put the name of the CSS filename in the 'link' tag of an example HTML, but also write CSS file itself.")
 parser.add_argument("--full-css", action = "store_true", help = "Write a full CSS file containing all classes, not just those classes which are needed to render the particular log output.")
