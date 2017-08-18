@@ -1,4 +1,4 @@
-[3gH    H    H    H    H    H    H    H    H    H    H    H    H    H    H    H    H    H    H    H    H    H    H    H    H    H    H    H    H    H    H    H    H    H    H    H    H    H    H    H    H    H    H    H   [01;36mreliant[00m [01;34mjoe [01;32m[~/tmp/foobar]: [00mls
+[01;36mreliant[00m [01;34mjoe [01;32m[~/tmp/foobar]: [00mls
 total 0
 -rw------- 1 joe joe 0   12.08.2017 21:16:37 screenlog.txt
 [01;36mreliant[00m [01;34mjoe [01;32m[~/tmp/foobar]: [00msu
