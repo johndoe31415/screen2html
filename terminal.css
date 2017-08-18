@@ -1,0 +1,13 @@
+pre.xterm {
+	color: #d3d7cf;
+	background-color: #000000;
+	padding: 20px;
+	border: 1px dotted white;
+	white-space: pre-wrap;
+}
+
+pre.xterm > span.b1 { background-color: #cc0000 }
+pre.xterm > span.f10 { color: #8ae234 }
+pre.xterm > span.f12 { color: #729fcf }
+pre.xterm > span.f14 { color: #34e2e2 }
+pre.xterm > span.f9 { color: #ef2929 }
