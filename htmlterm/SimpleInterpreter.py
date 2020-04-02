@@ -1,7 +1,5 @@
-#!/usr/bin/python3
-#
 #	screen2html - Convert ANSI-color containing terminal output to HTML.
-#	Copyright (C) 2017-2017 Johannes Bauer
+#	Copyright (C) 2017-2020 Johannes Bauer
 #
 #	This file is part of screen2html.
 #
@@ -20,20 +18,18 @@
 #	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 #	Johannes Bauer <JohannesBauer@gmx.de>
-#
 
-class InlineCSSResolver(object):
-	def __init__(self, css):
-		self._css = css
+from htmlterm import ColorScheme, CSSGenerator, ANSIInterpreter
 
-	def __call__(self, classnames):
-		attributes = [ self._css.class_attribute(classname) for classname in classnames ]
-		attributes = [ item for sublist in attributes for item in sublist ]
-		return "style=\"%s\"" % ("; ".join(attributes))
+class SimpleInterpreter():
+	def __init__(self, colorscheme_name, external_stylesheet = True):
+		color_scheme = ColorScheme.create_by_name(colorscheme_name)
+		self._css_generator = CSSGenerator(color_scheme, external_stylesheet = external_stylesheet)
+		self._ansi_interpreter = ANSIInterpreter(self._css_generator)
 
-class ClassCSSResolver(object):
-	def __init__(self, css):
-		self._css = css
+	@property
+	def css(self):
+		return self._css_generator.generate_css()
 
-	def __call__(self, classnames):
-		return "class=\"%s\"" % (" ".join(classnames))
+	def html(self, ansi_text):
+		return self._ansi_interpreter.render(ansi_text)
