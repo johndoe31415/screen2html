@@ -1,5 +1,5 @@
 # screen2html
-[![Build Status](https://travis-ci.org/johndoe31415/screen2html.svg?branch=master)](https://travis-ci.org/johndoe31415/screen2html)
+[![Build Status](https://travis-ci.com/johndoe31415/screen2html.svg?branch=master)](https://travis-ci.com/johndoe31415/screen2html)
 
 This tool converts text that contains ANSI escape sequences for coloring or
 formatting text (bold, underline, italics) to HTML, trying to preserve the
