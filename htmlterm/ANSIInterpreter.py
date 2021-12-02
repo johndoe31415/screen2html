@@ -1,5 +1,5 @@
 #	screen2html - Convert ANSI-color containing terminal output to HTML.
-#	Copyright (C) 2017-2020 Johannes Bauer
+#	Copyright (C) 2017-2021 Johannes Bauer
 #
 #	This file is part of screen2html.
 #
@@ -31,14 +31,15 @@ class ANSIInterpreter():
 		self._default_bg_color = default_bg_color
 		self._default_classes = set([ "f%d" % (self._default_fg_color), "b%d" % (self._default_bg_color) ])
 		self._attrs = None
-		self._output = None
+		self._output = [ ]
 		self._active_classes = None
 		self._current_classes = None
 		self._reset_terminal()
 		self._set_attributes()
 
 	def _reset_terminal(self):
-		self._output = [ ]
+		if self._active_classes is not None:
+			self._output.append("</span>")
 		self._active_classes = None
 		self._current_classes = None
 		self._attrs = {
@@ -60,7 +61,7 @@ class ANSIInterpreter():
 				self._output.append("</span>")
 			if self._current_classes is not None:
 				self._output.append("<span %s>" % (self._css_generator.get_attributes(self._current_classes)))
-			self._active_classes = self._current_classes
+			self._active_classes = list(self._current_classes)
 
 		text = text.replace("<", "&lt;")
 		text = text.replace(">", "&gt;")

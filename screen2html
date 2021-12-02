@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 #
 #	screen2html - Convert ANSI-color containing terminal output to HTML.
-#	Copyright (C) 2017-2020 Johannes Bauer
+#	Copyright (C) 2017-2021 Johannes Bauer
 #
 #	This file is part of screen2html.
 #
